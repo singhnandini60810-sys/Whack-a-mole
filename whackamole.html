@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Whack A Mole Advanced</title>
+<title>Whack A Mole</title>
 
 <style>
 body {
@@ -81,7 +81,7 @@ button:hover {
 
 <body>
 
-<h1>Whack-a-Mole 🐹</h1>
+<h1>Whack-a-Mole</h1>
 
 <div class="info">
     Hits: <span id="hits">0</span> |
@@ -102,6 +102,7 @@ const hitsDisplay = document.getElementById("hits");
 const missedDisplay = document.getElementById("missed");
 const highScoreDisplay = document.getElementById("highScore");
 const timeDisplay = document.getElementById("time");
+const pauseBtn = document.querySelector(".pause");
 
 let hits = 0;
 let missed = 0;
@@ -111,6 +112,7 @@ let gameInterval = null;
 let timerInterval = null;
 let timeLeft = 30;
 let isPaused = false;
+let isGameRunning = false;
 
 highScoreDisplay.textContent = highScore;
 
@@ -121,18 +123,20 @@ for (let i = 0; i < 9; i++) {
 
     const mole = document.createElement("div");
     mole.classList.add("mole");
-    mole.innerHTML = "🐹"; // Cute mole face
+    mole.innerHTML = "🐹";
 
     hole.appendChild(mole);
     game.appendChild(hole);
 
     hole.addEventListener("click", () => {
-        if (hole === currentHole && !isPaused) {
+        if (!isGameRunning || isPaused) return;
+
+        if (hole === currentHole) {
             hits++;
             hitsDisplay.textContent = hits;
             hole.classList.remove("active");
             currentHole = null;
-        } else if (!isPaused && hole !== currentHole) {
+        } else {
             missed++;
             missedDisplay.textContent = missed;
         }
@@ -150,31 +154,53 @@ function randomHole() {
 
 function startGame() {
     clearIntervals();
+
     hits = 0;
     missed = 0;
     timeLeft = 30;
     isPaused = false;
+    isGameRunning = true;
 
     hitsDisplay.textContent = hits;
     missedDisplay.textContent = missed;
     timeDisplay.textContent = timeLeft;
+    pauseBtn.textContent = "Pause";
 
     gameInterval = setInterval(randomHole, 800);
 
     timerInterval = setInterval(() => {
-        if (!isPaused) {
+        timeLeft--;
+        timeDisplay.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
+}
+
+function togglePause() {
+    if (!isGameRunning) return;
+
+    if (!isPaused) {
+        clearIntervals();
+        holes.forEach(h => h.classList.remove("active"));
+        isPaused = true;
+        pauseBtn.textContent = "Resume";
+    } else {
+        isPaused = false;
+        pauseBtn.textContent = "Pause";
+
+        gameInterval = setInterval(randomHole, 800);
+
+        timerInterval = setInterval(() => {
             timeLeft--;
             timeDisplay.textContent = timeLeft;
 
             if (timeLeft <= 0) {
                 endGame();
             }
-        }
-    }, 1000);
-}
-
-function togglePause() {
-    isPaused = !isPaused;
+        }, 1000);
+    }
 }
 
 function restartGame() {
@@ -184,6 +210,7 @@ function restartGame() {
 function endGame() {
     clearIntervals();
     holes.forEach(h => h.classList.remove("active"));
+    isGameRunning = false;
 
     if (hits > highScore) {
         highScore = hits;
