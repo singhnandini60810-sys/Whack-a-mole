@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whack A Mole Advanced</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    margin: 0;
+}
+
+h1 {
+    margin-top: 15px;
+}
+
+.info {
+    font-size: 18px;
+    margin: 10px;
+}
+
+#game {
+    width: 330px;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.hole {
+    width: 100px;
+    height: 100px;
+    background: #5d4037;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.mole {
+    width: 80px;
+    height: 80px;
+    background: #8d6e63;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -100px;
+    left: 10px;
+    transition: bottom 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.hole.active .mole {
+    bottom: 10px;
+}
+
+button {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.start { background: #4caf50; color: white; }
+.pause { background: #ff9800; color: white; }
+.restart { background: #f44336; color: white; }
+
+button:hover {
+    opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Whack-a-Mole 🐹</h1>
+
+<div class="info">
+    Hits: <span id="hits">0</span> |
+    Missed: <span id="missed">0</span> |
+    High Score: <span id="highScore">0</span> |
+    Time: <span id="time">30</span>s
+</div>
+
+<div id="game"></div>
+
+<button class="start" onclick="startGame()">Start</button>
+<button class="pause" onclick="togglePause()">Pause</button>
+<button class="restart" onclick="restartGame()">Restart</button>
+
+<script>
+const game = document.getElementById("game");
+const hitsDisplay = document.getElementById("hits");
+const missedDisplay = document.getElementById("missed");
+const highScoreDisplay = document.getElementById("highScore");
+const timeDisplay = document.getElementById("time");
+
+let hits = 0;
+let missed = 0;
+let highScore = localStorage.getItem("whackHighScore") || 0;
+let currentHole = null;
+let gameInterval = null;
+let timerInterval = null;
+let timeLeft = 30;
+let isPaused = false;
+
+highScoreDisplay.textContent = highScore;
+
+// Create 9 holes dynamically
+for (let i = 0; i < 9; i++) {
+    const hole = document.createElement("div");
+    hole.classList.add("hole");
+
+    const mole = document.createElement("div");
+    mole.classList.add("mole");
+    mole.innerHTML = "🐹"; // Cute mole face
+
+    hole.appendChild(mole);
+    game.appendChild(hole);
+
+    hole.addEventListener("click", () => {
+        if (hole === currentHole && !isPaused) {
+            hits++;
+            hitsDisplay.textContent = hits;
+            hole.classList.remove("active");
+            currentHole = null;
+        } else if (!isPaused && hole !== currentHole) {
+            missed++;
+            missedDisplay.textContent = missed;
+        }
+    });
+}
+
+const holes = document.querySelectorAll(".hole");
+
+function randomHole() {
+    holes.forEach(h => h.classList.remove("active"));
+    const index = Math.floor(Math.random() * holes.length);
+    currentHole = holes[index];
+    currentHole.classList.add("active");
+}
+
+function startGame() {
+    clearIntervals();
+    hits = 0;
+    missed = 0;
+    timeLeft = 30;
+    isPaused = false;
+
+    hitsDisplay.textContent = hits;
+    missedDisplay.textContent = missed;
+    timeDisplay.textContent = timeLeft;
+
+    gameInterval = setInterval(randomHole, 800);
+
+    timerInterval = setInterval(() => {
+        if (!isPaused) {
+            timeLeft--;
+            timeDisplay.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+    }, 1000);
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+}
+
+function restartGame() {
+    startGame();
+}
+
+function endGame() {
+    clearIntervals();
+    holes.forEach(h => h.classList.remove("active"));
+
+    if (hits > highScore) {
+        highScore = hits;
+        localStorage.setItem("whackHighScore", highScore);
+        highScoreDisplay.textContent = highScore;
+    }
+
+    alert("Game Over!\nHits: " + hits + "\nMissed: " + missed);
+}
+
+function clearIntervals() {
+    clearInterval(gameInterval);
+    clearInterval(timerInterval);
+}
+</script>
+
+</body>
+</html>
