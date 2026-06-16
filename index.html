@@ -16,33 +16,36 @@
 <body>
 
 
+<div id="menu">
+
 <h1>🐹 Whack-A-Mole</h1>
 
+<h2>Select Difficulty</h2>
 
-<div class="level-box">
 
-<h3>Select Difficulty</h3>
-
-<select id="level">
-
-<option value="">Choose Level</option>
-
-<option value="1200">
+<button onclick="selectLevel('easy')">
 Easy 🐢
-</option>
+</button>
 
-<option value="700">
+
+<button onclick="selectLevel('medium')">
 Medium ⚡
-</option>
+</button>
 
-<option value="350">
+
+<button onclick="selectLevel('hard')">
 Hard 🔥
-</option>
+</button>
 
-</select>
 
 </div>
 
+
+
+<div id="game" style="display:none">
+
+
+<h1>🐹 Whack-A-Mole</h1>
 
 
 <div class="stats">
@@ -61,12 +64,6 @@ Miss
 
 
 <div>
-Time
-<h2 id="time">30</h2>
-</div>
-
-
-<div>
 High
 <h2 id="high">0</h2>
 </div>
@@ -76,32 +73,12 @@ High
 
 
 
-<div class="game-board">
 
-
-<div class="hole"><div class="mole"></div></div>
-<div class="hole"><div class="mole"></div></div>
-<div class="hole"><div class="mole"></div></div>
-
-<div class="hole"><div class="mole"></div></div>
-<div class="hole"><div class="mole"></div></div>
-<div class="hole"><div class="mole"></div></div>
-
-<div class="hole"><div class="mole"></div></div>
-<div class="hole"><div class="mole"></div></div>
-<div class="hole"><div class="mole"></div></div>
-
-
-</div>
+<div id="board"></div>
 
 
 
 <div>
-
-<button id="start" onclick="startGame()" disabled>
-Start
-</button>
-
 
 <button onclick="pauseGame()">
 Pause
@@ -115,10 +92,14 @@ Restart
 </div>
 
 
+</div>
+
+
 
 <div id="hammer">
 🔨
 </div>
+
 
 
 <script src="script.js"></script>
