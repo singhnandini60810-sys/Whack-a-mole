@@ -1,4 +1,4 @@
-# 🐹 Whack-A-Mole Game
+# Whack-A-Mole Game
 
 An interactive browser game built using HTML, CSS and JavaScript.
 
