@@ -1,166 +1,502 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Arial,sans-serif;
 }
 
 
 body{
 
-height:100vh;
+    min-height:100vh;
 
-background:
-linear-gradient(135deg,#667eea,#764ba2);
+    background:
+    linear-gradient(135deg,#667eea,#764ba2);
 
-color:white;
+    color:white;
 
-display:flex;
+    display:flex;
 
-flex-direction:column;
+    flex-direction:column;
 
-align-items:center;
+    align-items:center;
 
-justify-content:center;
+    justify-content:center;
+
+    overflow:hidden;
 
 }
 
+
+/* Title */
 
 h1{
 
-font-size:45px;
+    font-size:45px;
 
-margin-bottom:20px;
+    margin-bottom:15px;
+
+    text-shadow:
+    0 5px 15px #0005;
 
 }
+
+
+
+/* Difficulty box */
+
+.level-box{
+
+    background:#ffffff25;
+
+    backdrop-filter:blur(10px);
+
+    padding:18px 35px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 10px 25px #0003;
+
+}
+
+
+.level-box h3{
+
+    margin-bottom:10px;
+
+}
+
+
+
+select{
+
+    width:180px;
+
+    padding:10px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:25px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}
+
+
+
+/* Score cards */
 
 
 .stats{
 
-display:flex;
+    display:flex;
 
-gap:20px;
+    gap:15px;
 
-margin-bottom:20px;
+    margin-bottom:25px;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
 
 }
+
 
 
 .stats div{
 
-background:#ffffff22;
+    width:100px;
 
-padding:15px;
+    padding:15px 10px;
 
-border-radius:15px;
+    background:#ffffff20;
 
-text-align:center;
+    border-radius:18px;
 
-width:110px;
+    text-align:center;
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+    0 8px 20px #0003;
 
 }
+
+
+
+.stats h2{
+
+    margin-top:8px;
+
+    font-size:28px;
+
+}
+
+
+
+
+/* Game Area */
 
 
 .game-board{
 
-width:330px;
+    width:360px;
 
-height:330px;
+    height:360px;
 
-display:grid;
+    display:grid;
 
-grid-template-columns:repeat(3,1fr);
+    grid-template-columns:
+    repeat(3,1fr);
 
-gap:15px;
+    gap:18px;
 
 }
+
+
+
+
+/* Mole holes */
 
 
 .hole{
 
-background:#3d2b1f;
+    background:#3b2415;
 
-border-radius:50%;
+    height:105px;
 
-height:100px;
+    border-radius:50%;
 
-position:relative;
+    position:relative;
 
-overflow:hidden;
+    overflow:hidden;
 
-box-shadow:
-inset 0 -15px #24160e;
+    cursor:pointer;
 
-cursor:pointer;
+    box-shadow:
+
+    inset 0 -15px 0 #24150c,
+
+    0 8px 15px #0005;
 
 }
+
+
+
+/* Mole */
 
 
 .mole{
 
-width:65px;
+    width:75px;
 
-height:65px;
+    height:75px;
 
-background:#8b4513;
+    background:
+    radial-gradient(circle at 30% 30%,
+    #b5651d,
+    #7a3d10);
 
-border-radius:50%;
+    border-radius:50%;
 
-position:absolute;
 
-bottom:-70px;
+    position:absolute;
 
-left:50%;
 
-transform:translateX(-50%);
+    left:50%;
 
-transition:.15s;
+    bottom:-80px;
+
+
+    transform:
+    translateX(-50%);
+
+
+    transition:
+    bottom .15s ease;
+
+
+    cursor:pointer;
+
+    pointer-events:auto;
+
+
+    box-shadow:
+    inset -8px -10px 0 #0003;
+
+}
+
+
+
+
+/* Mole eyes */
+
+
+.mole::before{
+
+    content:"";
+
+    position:absolute;
+
+
+    width:12px;
+
+    height:12px;
+
+
+    background:black;
+
+    border-radius:50%;
+
+
+    top:22px;
+
+    left:18px;
+
+
+    box-shadow:
+    28px 0 black;
 
 }
 
 
-.mole:before{
 
-content:"";
+/* Nose */
 
-position:absolute;
 
-width:10px;
+.mole::after{
 
-height:10px;
+    content:"";
 
-background:black;
+    position:absolute;
 
-border-radius:50%;
 
-left:15px;
+    width:16px;
 
-top:20px;
+    height:12px;
 
-box-shadow:25px 0 black;
+
+    background:#ff9b9b;
+
+    border-radius:50%;
+
+
+    top:42px;
+
+    left:30px;
 
 }
+
+
 
 
 
 .mole.up{
 
-bottom:5px;
+    bottom:5px;
 
-animation:pop .25s;
+    animation:
+
+    pop .25s ease;
 
 }
+
 
 
 @keyframes pop{
 
-from{
-transform:translateX(-50%) scale(.5);
+
+0%{
+
+transform:
+translateX(-50%)
+scale(.4);
+
 }
 
-to{
-transform:translateX(-50%) scale(1);
+
+100%{
+
+transform:
+translateX(-50%)
+scale(1);
+
 }
+
+}
+
+
+
+
+/* Buttons */
+
+
+button{
+
+    margin-top:25px;
+
+    margin-left:8px;
+
+    padding:
+
+    12px 30px;
+
+
+    border:none;
+
+
+    border-radius:30px;
+
+
+    font-size:18px;
+
+
+    cursor:pointer;
+
+
+    background:white;
+
+
+    color:#333;
+
+
+    transition:.2s;
+
+}
+
+
+
+button:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.05);
+
+}
+
+
+button:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+}
+
+
+
+/* Hammer */
+
+
+#hammer{
+
+    position:fixed;
+
+
+    font-size:55px;
+
+
+    display:none;
+
+
+    pointer-events:none;
+
+
+    transform:
+    rotate(-25deg);
+
+
+    animation:
+    hit .2s;
+
+}
+
+
+
+@keyframes hit{
+
+
+0%{
+
+transform:
+rotate(-60deg)
+scale(.7);
+
+}
+
+
+100%{
+
+transform:
+rotate(-25deg)
+scale(1);
+
+}
+
+}
+
+
+
+
+/* Mobile */
+
+
+@media(max-width:500px){
+
+
+h1{
+
+font-size:35px;
+
+}
+
+
+
+.game-board{
+
+
+width:280px;
+
+height:280px;
+
+gap:12px;
+
+}
+
+
+
+.hole{
+
+
+height:80px;
+
+}
+
+
+
+.mole{
+
+
+width:60px;
+
+height:60px;
+
+}
+
+
+
+.stats div{
+
+width:80px;
 
 }
 
@@ -168,59 +504,11 @@ transform:translateX(-50%) scale(1);
 
 button{
 
-padding:12px 25px;
+padding:10px 20px;
 
-margin:15px 5px;
-
-border:none;
-
-border-radius:25px;
-
-font-size:18px;
-
-cursor:pointer;
+font-size:15px;
 
 }
 
-
-button:hover{
-
-transform:scale(1.05);
-
-}
-
-
-#hammer{
-
-position:fixed;
-
-font-size:50px;
-
-display:none;
-
-pointer-events:none;
-
-}
-
-
-@media(max-width:500px){
-
-
-.game-board{
-
-width:270px;
-
-height:270px;
-
-gap:10px;
-
-}
-
-
-.hole{
-
-height:80px;
-
-}
 
 }
