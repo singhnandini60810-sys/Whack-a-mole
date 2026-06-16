@@ -1,36 +1,35 @@
-const board = document.getElementById("board");
 const menu = document.getElementById("menu");
 const game = document.getElementById("game");
-
-let holes = [];
+const board = document.getElementById("board");
 
 let score = 0;
 let miss = 0;
 
-let speed = 1000;
 let grid = 3;
+let speed = 1000;
 
+let timer;
 let running = false;
 let paused = false;
 
-let timer;
+let moles = [];
 
-
-let high =
+let highScore =
 localStorage.getItem("highscore") || 0;
 
 
-document.getElementById("high").innerText = high;
+document.getElementById("high").innerText = highScore;
 
 
 
 function selectLevel(level){
 
-    // hide menu
-    menu.style.display = "none";
+    console.log("Level selected:", level);
 
-    // show game
+
+    menu.style.display = "none";
     game.style.display = "block";
+
 
 
     if(level === "easy"){
@@ -44,7 +43,7 @@ function selectLevel(level){
     if(level === "medium"){
 
         grid = 5;
-        speed = 650;
+        speed = 600;
 
     }
 
@@ -52,7 +51,7 @@ function selectLevel(level){
     if(level === "hard"){
 
         grid = 9;
-        speed = 350;
+        speed = 300;
 
     }
 
@@ -60,7 +59,13 @@ function selectLevel(level){
     createBoard();
 
 
-    startGame();
+    running = true;
+
+
+    timer = setInterval(
+        spawnMole,
+        speed
+    );
 
 }
 
@@ -73,15 +78,11 @@ function createBoard(){
 
     board.innerHTML = "";
 
-    holes = [];
-
-
     board.style.gridTemplateColumns =
     `repeat(${grid},1fr)`;
 
 
-    let size =
-    Math.min(300, window.innerWidth*0.8) / grid;
+    moles=[];
 
 
 
@@ -95,15 +96,6 @@ function createBoard(){
         hole.className="hole";
 
 
-        hole.style.width =
-        size+"px";
-
-
-        hole.style.height =
-        size+"px";
-
-
-
 
         let mole =
         document.createElement("div");
@@ -115,53 +107,27 @@ function createBoard(){
 
         hole.appendChild(mole);
 
-
         board.appendChild(hole);
 
 
-
-        holes.push(mole);
-
+        moles.push(mole);
 
 
 
-        mole.addEventListener("click",(e)=>{
+        mole.onclick=function(e){
 
 
             e.stopPropagation();
 
 
-            hitMole(mole,e);
+            hit(mole,e);
 
 
-        });
+        };
 
 
     }
 
-}
-
-
-
-
-
-
-
-function startGame(){
-
-
-    running=true;
-
-
-    clearInterval(timer);
-
-
-    timer =
-    setInterval(
-        showMole,
-        speed
-    );
-
 
 }
 
@@ -170,8 +136,7 @@ function startGame(){
 
 
 
-
-function showMole(){
+function spawnMole(){
 
 
     if(!running || paused)
@@ -179,7 +144,7 @@ function showMole(){
 
 
 
-    holes.forEach(m=>{
+    moles.forEach(m=>{
 
         m.classList.remove("up");
 
@@ -187,16 +152,17 @@ function showMole(){
 
 
 
-    let mole =
-    holes[
-        Math.floor(
-        Math.random()*holes.length)
-    ];
+    let random =
+    Math.floor(
+    Math.random()*moles.length);
 
+
+
+    let mole =
+    moles[random];
 
 
     mole.classList.add("up");
-
 
 
 
@@ -216,9 +182,9 @@ function showMole(){
 
 
 
-            if(miss >= 20){
+            if(miss>=20){
 
-                gameOver();
+                endGame();
 
             }
 
@@ -229,6 +195,7 @@ function showMole(){
     },speed);
 
 
+
 }
 
 
@@ -237,64 +204,53 @@ function showMole(){
 
 
 
+function hit(mole,e){
 
-function hitMole(mole,e){
 
-
-    if(!running || paused)
+    if(!mole.classList.contains("up"))
         return;
 
 
 
-    if(mole.classList.contains("up")){
+    score++;
 
 
-        score++;
-
-
-        mole.classList.remove("up");
+    mole.classList.remove("up");
 
 
 
-        showHammer(e);
+    showHammer(e);
 
 
 
-        // increase speed every 5 hits
-
-        if(score % 5 === 0){
+    if(score%5===0){
 
 
-            speed -= 100;
+        speed -= 100;
 
 
-            if(speed < 150)
-                speed = 150;
+        if(speed < 150)
+            speed=150;
 
 
-
-            clearInterval(timer);
-
-
-            timer =
-            setInterval(
-                showMole,
-                speed
-            );
+        clearInterval(timer);
 
 
-        }
-
-
-
-        update();
+        timer=setInterval(
+            spawnMole,
+            speed
+        );
 
 
     }
 
 
-}
 
+
+    update();
+
+
+}
 
 
 
@@ -304,35 +260,35 @@ function hitMole(mole,e){
 function update(){
 
 
-    document.getElementById("score")
-    .innerText = score;
+document.getElementById("score")
+.innerText=score;
 
 
-    document.getElementById("miss")
-    .innerText = miss;
+document.getElementById("miss")
+.innerText=miss;
 
 
 
-    if(score > high){
+if(score>highScore){
 
 
-        high = score;
+highScore=score;
 
 
-        localStorage.setItem(
-            "highscore",
-            high
-        );
+localStorage.setItem(
+"highscore",
+highScore
+);
 
 
-        document.getElementById("high")
-        .innerText = high;
-
-    }
+document.getElementById("high")
+.innerText=highScore;
 
 
 }
 
+
+}
 
 
 
@@ -343,7 +299,7 @@ function update(){
 function pauseGame(){
 
 
-    paused = !paused;
+paused=!paused;
 
 
 }
@@ -356,7 +312,7 @@ function pauseGame(){
 
 function restartGame(){
 
-    location.reload();
+location.reload();
 
 }
 
@@ -366,31 +322,24 @@ function restartGame(){
 
 
 
-
-function gameOver(){
-
-
-    running=false;
+function endGame(){
 
 
-    clearInterval(timer);
+running=false;
 
 
-
-    alert(
-        "🐹 GAME OVER\n\nScore : "
-        +score+
-        "\nMiss : "
-        +miss
-    );
+clearInterval(timer);
 
 
+alert(
+"Game Over\nScore: "+score
+);
 
-    location.reload();
+
+location.reload();
+
 
 }
-
-
 
 
 
@@ -400,29 +349,27 @@ function gameOver(){
 function showHammer(e){
 
 
-    const hammer =
-    document.getElementById("hammer");
+let hammer =
+document.getElementById("hammer");
+
+
+hammer.style.left =
+e.clientX+"px";
+
+
+hammer.style.top =
+e.clientY+"px";
+
+
+hammer.style.display="block";
 
 
 
-    hammer.style.left =
-    e.clientX+"px";
+setTimeout(()=>{
 
+hammer.style.display="none";
 
-    hammer.style.top =
-    e.clientY+"px";
-
-
-    hammer.style.display="block";
-
-
-
-    setTimeout(()=>{
-
-        hammer.style.display="none";
-
-
-    },150);
+},150);
 
 
 }
