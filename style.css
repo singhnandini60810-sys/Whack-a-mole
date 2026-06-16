@@ -1,512 +1,178 @@
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Segoe UI",Arial,sans-serif;
+
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+
 }
 
 
 body{
 
-    min-height:100vh;
+height:100vh;
 
-    background:
-    linear-gradient(135deg,#667eea,#764ba2);
+background:
+linear-gradient(135deg,#667eea,#764ba2);
 
-    color:white;
+display:flex;
 
-    display:flex;
+justify-content:center;
 
-    flex-direction:column;
+align-items:center;
 
-    align-items:center;
+color:white;
 
-    justify-content:center;
-
-    overflow:hidden;
-
-}
-
-
-/* Title */
-
-h1{
-
-    font-size:45px;
-
-    margin-bottom:15px;
-
-    text-shadow:
-    0 5px 15px #0005;
+text-align:center;
 
 }
 
 
 
-/* Difficulty box */
+#menu{
 
-.level-box{
+background:#ffffff22;
 
-    background:#ffffff25;
+padding:40px;
 
-    backdrop-filter:blur(10px);
+border-radius:25px;
 
-    padding:18px 35px;
-
-    border-radius:20px;
-
-    text-align:center;
-
-    margin-bottom:20px;
-
-    box-shadow:
-    0 10px 25px #0003;
-
-}
-
-
-.level-box h3{
-
-    margin-bottom:10px;
+backdrop-filter:blur(10px);
 
 }
 
 
 
-select{
+button{
 
-    width:180px;
+padding:15px 35px;
 
-    padding:10px;
+margin:10px;
 
-    border:none;
+border:none;
 
-    outline:none;
+border-radius:30px;
 
-    border-radius:25px;
+font-size:18px;
 
-    font-size:16px;
-
-    cursor:pointer;
+cursor:pointer;
 
 }
 
 
+button:hover{
 
-/* Score cards */
+transform:scale(1.05);
+
+}
+
 
 
 .stats{
 
-    display:flex;
+display:flex;
 
-    gap:15px;
+justify-content:center;
 
-    margin-bottom:25px;
+gap:15px;
 
-    flex-wrap:wrap;
-
-    justify-content:center;
+margin:20px;
 
 }
-
 
 
 .stats div{
 
-    width:100px;
+background:#ffffff25;
 
-    padding:15px 10px;
+padding:15px;
 
-    background:#ffffff20;
+border-radius:15px;
 
-    border-radius:18px;
-
-    text-align:center;
-
-    backdrop-filter:blur(10px);
-
-    box-shadow:
-    0 8px 20px #0003;
+width:100px;
 
 }
 
 
 
-.stats h2{
+#board{
 
-    margin-top:8px;
+display:grid;
 
-    font-size:28px;
+gap:10px;
 
-}
-
-
-
-
-/* Game Area */
-
-
-.game-board{
-
-    width:360px;
-
-    height:360px;
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(3,1fr);
-
-    gap:18px;
+margin:auto;
 
 }
 
-
-
-
-/* Mole holes */
 
 
 .hole{
 
-    background:#3b2415;
+background:#3b2415;
 
-    height:105px;
+border-radius:50%;
 
-    border-radius:50%;
+position:relative;
 
-    position:relative;
+cursor:pointer;
 
-    overflow:hidden;
-
-    cursor:pointer;
-
-    box-shadow:
-
-    inset 0 -15px 0 #24150c,
-
-    0 8px 15px #0005;
+overflow:hidden;
 
 }
 
-
-
-/* Mole */
 
 
 .mole{
 
-    width:75px;
+position:absolute;
 
-    height:75px;
+width:70%;
 
-    background:
-    radial-gradient(circle at 30% 30%,
-    #b5651d,
-    #7a3d10);
+height:70%;
 
-    border-radius:50%;
+background:#9b5318;
 
+border-radius:50%;
 
-    position:absolute;
+left:15%;
 
+bottom:-80%;
 
-    left:50%;
-
-    bottom:-80px;
-
-
-    transform:
-    translateX(-50%);
-
-
-    transition:
-    bottom .15s ease;
-
-
-    cursor:pointer;
-
-    pointer-events:auto;
-
-
-    box-shadow:
-    inset -8px -10px 0 #0003;
+transition:.15s;
 
 }
-
-
-
-
-/* Mole eyes */
-
-
-.mole::before{
-
-    content:"";
-
-    position:absolute;
-
-
-    width:12px;
-
-    height:12px;
-
-
-    background:black;
-
-    border-radius:50%;
-
-
-    top:22px;
-
-    left:18px;
-
-
-    box-shadow:
-    28px 0 black;
-
-}
-
-
-
-/* Nose */
-
-
-.mole::after{
-
-    content:"";
-
-    position:absolute;
-
-
-    width:16px;
-
-    height:12px;
-
-
-    background:#ff9b9b;
-
-    border-radius:50%;
-
-
-    top:42px;
-
-    left:30px;
-
-}
-
-
 
 
 
 .mole.up{
 
-    bottom:5px;
-
-    animation:
-
-    pop .25s ease;
+bottom:15%;
 
 }
 
-
-
-@keyframes pop{
-
-
-0%{
-
-transform:
-translateX(-50%)
-scale(.4);
-
-}
-
-
-100%{
-
-transform:
-translateX(-50%)
-scale(1);
-
-}
-
-}
-
-
-
-
-/* Buttons */
-
-
-button{
-
-    margin-top:25px;
-
-    margin-left:8px;
-
-    padding:
-
-    12px 30px;
-
-
-    border:none;
-
-
-    border-radius:30px;
-
-
-    font-size:18px;
-
-
-    cursor:pointer;
-
-
-    background:white;
-
-
-    color:#333;
-
-
-    transition:.2s;
-
-}
-
-
-
-button:hover{
-
-    transform:
-    translateY(-3px)
-    scale(1.05);
-
-}
-
-
-button:disabled{
-
-    opacity:.5;
-
-    cursor:not-allowed;
-
-}
-
-
-
-/* Hammer */
 
 
 #hammer{
 
-    position:fixed;
+position:fixed;
 
+display:none;
 
-    font-size:55px;
+font-size:50px;
 
-
-    display:none;
-
-
-    pointer-events:none;
-
-
-    transform:
-    rotate(-25deg);
-
-
-    animation:
-    hit .2s;
+pointer-events:none;
 
 }
 
 
 
-@keyframes hit{
+@media(max-width:600px){
 
 
-0%{
+#board{
 
-transform:
-rotate(-60deg)
-scale(.7);
-
-}
-
-
-100%{
-
-transform:
-rotate(-25deg)
-scale(1);
-
-}
-
-}
-
-
-
-
-/* Mobile */
-
-
-@media(max-width:500px){
-
-
-h1{
-
-font-size:35px;
-
-}
-
-
-
-.game-board{
-
-
-width:280px;
-
-height:280px;
-
-gap:12px;
-
-}
-
-
-
-.hole{
-
-
-height:80px;
-
-}
-
-
-
-.mole{
-
-
-width:60px;
-
-height:60px;
-
-}
-
-
-
-.stats div{
-
-width:80px;
-
-}
-
-
-
-button{
-
-padding:10px 20px;
-
-font-size:15px;
+max-width:90vw;
 
 }
 
