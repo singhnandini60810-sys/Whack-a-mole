@@ -1,99 +1,183 @@
-const holes = document.querySelectorAll(".hole");
-const moles = document.querySelectorAll(".mole");
-
-const level = document.getElementById("level");
-const startBtn = document.getElementById("start");
-
-const scoreText = document.getElementById("score");
-const missText = document.getElementById("miss");
-const timeText = document.getElementById("time");
-const highText = document.getElementById("high");
+const board =
+document.getElementById("board");
 
 
-let score = 0;
-let miss = 0;
-let time = 30;
+const menu =
+document.getElementById("menu");
 
-let running = false;
-let paused = false;
 
-let moleSpeed = 700;
+const game =
+document.getElementById("game");
+
+
+
+let holes=[];
+
+let score=0;
+
+let miss=0;
+
+
+let speed=1000;
+
+let grid=3;
+
+
+let running=false;
+
+let paused=false;
+
 
 let timer;
-let gameLoop;
 
 
-let highScore =
+
+let high =
 localStorage.getItem("highscore") || 0;
 
 
-highText.innerText = highScore;
-
-
-
-// Enable start after selecting level
-
-level.addEventListener("change",()=>{
-
-
-    if(level.value){
-
-        startBtn.disabled = false;
-
-        moleSpeed = Number(level.value);
-
-    }
-
-});
+document.getElementById("high").innerText =
+high;
 
 
 
 
-// Start game
+
+function selectLevel(level){
+
+
+menu.style.display="none";
+
+game.style.display="block";
+
+
+
+if(level==="easy"){
+
+grid=3;
+
+speed=1100;
+
+}
+
+
+if(level==="medium"){
+
+grid=5;
+
+speed=700;
+
+}
+
+
+if(level==="hard"){
+
+grid=9;
+
+speed=400;
+
+}
+
+
+
+createBoard();
+
+startGame();
+
+
+}
+
+
+
+
+
+
+function createBoard(){
+
+
+board.innerHTML="";
+
+
+
+board.style.gridTemplateColumns =
+`repeat(${grid},1fr)`;
+
+
+
+holes=[];
+
+
+
+for(let i=0;i<grid*grid;i++){
+
+
+let hole =
+document.createElement("div");
+
+
+hole.className="hole";
+
+
+hole.style.width =
+`${300/grid}px`;
+
+
+hole.style.height =
+`${300/grid}px`;
+
+
+
+let mole =
+document.createElement("div");
+
+
+mole.className="mole";
+
+
+hole.appendChild(mole);
+
+
+
+board.appendChild(hole);
+
+
+
+holes.push(mole);
+
+
+
+mole.onclick=(e)=>{
+
+
+e.stopPropagation();
+
+
+
+hitMole(mole,e);
+
+
+
+};
+
+
+}
+
+
+
+}
+
+
+
+
+
 
 function startGame(){
 
 
-    if(running)
-        return;
+running=true;
 
 
-    running = true;
-    paused = false;
-
-
-    timer = setInterval(()=>{
-
-
-        if(!paused){
-
-
-            time--;
-
-
-            timeText.innerText = time;
-
-
-
-            if(time <= 0){
-
-                endGame();
-
-            }
-
-        }
-
-
-    },1000);
-
-
-
-
-    gameLoop =
-    setInterval(
-        showMole,
-        moleSpeed
-    );
+timer=setInterval(showMole,speed);
 
 
 }
@@ -102,176 +186,64 @@ function startGame(){
 
 
 
-// Random mole appearance
+
 
 function showMole(){
 
 
-    if(!running || paused)
-        return;
+if(!running || paused)
+return;
 
 
 
-    moles.forEach(mole=>{
+holes.forEach(m=>{
 
-        mole.classList.remove("up");
+m.classList.remove("up");
 
-    });
-
-
-
-
-    let randomIndex =
-    Math.floor(
-        Math.random()*moles.length
-    );
+});
 
 
 
-    let mole =
-    moles[randomIndex];
+let random =
+holes[
+Math.floor(Math.random()*holes.length)
+];
 
 
 
-    mole.classList.add("up");
+random.classList.add("up");
 
 
 
-    setTimeout(()=>{
+setTimeout(()=>{
 
 
-        if(mole.classList.contains("up")){
+if(random.classList.contains("up")){
 
 
-            mole.classList.remove("up");
+random.classList.remove("up");
 
 
-            miss++;
+miss++;
 
 
-            missText.innerText = miss;
+update();
 
 
-        }
 
+if(miss>=20)
 
-    },moleSpeed);
+gameOver();
+
 
 }
 
 
 
+},speed);
 
 
-// Mole hit detection
 
-moles.forEach(mole=>{
-
-
-    mole.addEventListener("click",(event)=>{
-
-
-        event.stopPropagation();
-
-
-
-        if(!running || paused)
-            return;
-
-
-
-
-        if(mole.classList.contains("up")){
-
-
-            score++;
-
-
-            scoreText.innerText =
-            score;
-
-
-
-            mole.classList.remove("up");
-
-
-
-            showHammer(event);
-
-
-
-            updateHighScore();
-
-
-        }
-
-
-    });
-
-
-});
-
-
-
-
-
-
-// Miss clicking empty holes
-
-holes.forEach(hole=>{
-
-
-    hole.addEventListener("click",()=>{
-
-
-        if(
-            running &&
-            !paused
-        ){
-
-
-            miss++;
-
-
-            missText.innerText =
-            miss;
-
-
-        }
-
-
-    });
-
-
-});
-
-
-
-
-
-
-// High score system
-
-function updateHighScore(){
-
-
-    if(score > highScore){
-
-
-        highScore = score;
-
-
-        localStorage.setItem(
-            "highscore",
-            highScore
-        );
-
-
-        highText.innerText =
-        highScore;
-
-
-    }
 
 
 }
@@ -281,23 +253,116 @@ function updateHighScore(){
 
 
 
-// Pause
+function hitMole(m,e){
+
+
+if(
+!running ||
+paused
+)
+
+return;
+
+
+
+if(m.classList.contains("up")){
+
+
+score++;
+
+
+m.classList.remove("up");
+
+
+
+showHammer(e);
+
+
+
+if(score%5===0){
+
+
+speed-=100;
+
+
+clearInterval(timer);
+
+timer=setInterval(
+showMole,
+Math.max(200,speed)
+);
+
+
+}
+
+
+
+if(score%8===0){
+
+speed-=100;
+
+}
+
+
+update();
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+function update(){
+
+
+document.getElementById("score")
+.innerText=score;
+
+
+document.getElementById("miss")
+.innerText=miss;
+
+
+
+
+if(score>high){
+
+
+high=score;
+
+
+localStorage.setItem(
+"highscore",
+high
+);
+
+
+document.getElementById("high")
+.innerText=high;
+
+
+}
+
+
+
+}
+
+
+
+
+
+
 
 function pauseGame(){
 
-
-    if(!running)
-        return;
-
-
-    paused = !paused;
-
-
-
-    document.querySelector("button:nth-of-type(2)")
-    .innerText =
-    paused ? "Resume" : "Pause";
-
+paused=!paused;
 
 }
 
@@ -306,46 +371,35 @@ function pauseGame(){
 
 
 
-// Restart
 
 function restartGame(){
 
+location.reload();
 
-    clearInterval(timer);
-
-    clearInterval(gameLoop);
-
-
-    score = 0;
-
-    miss = 0;
-
-    time = 30;
-
-
-    scoreText.innerText = 0;
-
-    missText.innerText = 0;
-
-    timeText.innerText = 30;
+}
 
 
 
-    moles.forEach(m=>{
-
-        m.classList.remove("up");
-
-    });
 
 
 
-    running = false;
 
-    paused = false;
+function gameOver(){
 
 
-    startBtn.disabled =
-    !level.value;
+running=false;
+
+
+clearInterval(timer);
+
+
+
+alert(
+"GAME OVER\nScore: "+score
+);
+
+
+location.reload();
 
 
 }
@@ -355,73 +409,31 @@ function restartGame(){
 
 
 
-// Game over
-
-function endGame(){
-
-
-    running = false;
-
-
-    clearInterval(timer);
-
-    clearInterval(gameLoop);
-
-
-
-    moles.forEach(m=>{
-
-        m.classList.remove("up");
-
-    });
-
-
-
-    alert(
-        "🎮 Game Over!\n\nScore: "
-        + score +
-        "\nMiss: "
-        + miss
-    );
-
-
-}
-
-
-
-
-
-
-// Hammer animation
 
 function showHammer(e){
 
 
-    const hammer =
-    document.getElementById("hammer");
+let h =
+document.getElementById("hammer");
+
+h.style.left =
+e.clientX+"px";
 
 
-    hammer.style.left =
-    e.clientX + "px";
+h.style.top =
+e.clientY+"px";
 
 
-    hammer.style.top =
-    e.clientY + "px";
-
-
-    hammer.style.display =
-    "block";
+h.style.display="block";
 
 
 
-    setTimeout(()=>{
+setTimeout(()=>{
 
+h.style.display="none";
 
-        hammer.style.display =
-        "none";
+},150);
 
-
-    },200);
 
 
 }
