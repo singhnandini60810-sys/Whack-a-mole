@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,37 +12,73 @@
 
 </head>
 
+
 <body>
+
 
 <h1>🐹 Whack-A-Mole</h1>
 
+
+<div class="level-box">
+
+<h3>Select Difficulty</h3>
+
+<select id="level">
+
+<option value="">Choose Level</option>
+
+<option value="1200">
+Easy 🐢
+</option>
+
+<option value="700">
+Medium ⚡
+</option>
+
+<option value="350">
+Hard 🔥
+</option>
+
+</select>
+
+</div>
+
+
+
 <div class="stats">
+
 
 <div>
 Score
 <h2 id="score">0</h2>
 </div>
 
+
 <div>
 Miss
 <h2 id="miss">0</h2>
 </div>
+
 
 <div>
 Time
 <h2 id="time">30</h2>
 </div>
 
+
 <div>
-High Score
+High
 <h2 id="high">0</h2>
 </div>
 
+
 </div>
+
 
 
 <div class="game-board">
 
+
 <div class="hole"><div class="mole"></div></div>
 <div class="hole"><div class="mole"></div></div>
 <div class="hole"><div class="mole"></div></div>
@@ -57,22 +95,34 @@ High Score
 </div>
 
 
-<div class="buttons">
 
-<button onclick="startGame()">Start</button>
+<div>
 
-<button onclick="pauseGame()">Pause</button>
+<button id="start" onclick="startGame()" disabled>
+Start
+</button>
 
-<button onclick="restartGame()">Restart</button>
+
+<button onclick="pauseGame()">
+Pause
+</button>
+
+
+<button onclick="restartGame()">
+Restart
+</button>
 
 </div>
 
 
-<div id="hammer">🔨</div>
+
+<div id="hammer">
+🔨
+</div>
 
 
 <script src="script.js"></script>
 
-
 </body>
+
 </html>
