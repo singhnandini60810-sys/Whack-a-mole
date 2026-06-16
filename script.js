@@ -1,92 +1,68 @@
-const board =
-document.getElementById("board");
+const board = document.getElementById("board");
+const menu = document.getElementById("menu");
+const game = document.getElementById("game");
 
+let holes = [];
 
-const menu =
-document.getElementById("menu");
+let score = 0;
+let miss = 0;
 
+let speed = 1000;
+let grid = 3;
 
-const game =
-document.getElementById("game");
-
-
-
-let holes=[];
-
-let score=0;
-
-let miss=0;
-
-
-let speed=1000;
-
-let grid=3;
-
-
-let running=false;
-
-let paused=false;
-
+let running = false;
+let paused = false;
 
 let timer;
-
 
 
 let high =
 localStorage.getItem("highscore") || 0;
 
 
-document.getElementById("high").innerText =
-high;
-
-
+document.getElementById("high").innerText = high;
 
 
 
 function selectLevel(level){
 
+    // hide menu
+    menu.style.display = "none";
 
-menu.style.display="none";
-
-game.style.display="block";
-
-
-
-if(level==="easy"){
-
-grid=3;
-
-speed=1100;
-
-}
+    // show game
+    game.style.display = "block";
 
 
-if(level==="medium"){
+    if(level === "easy"){
 
-grid=5;
+        grid = 3;
+        speed = 1000;
 
-speed=700;
-
-}
-
-
-if(level==="hard"){
-
-grid=9;
-
-speed=400;
-
-}
+    }
 
 
+    if(level === "medium"){
 
-createBoard();
+        grid = 5;
+        speed = 650;
 
-startGame();
+    }
 
+
+    if(level === "hard"){
+
+        grid = 9;
+        speed = 350;
+
+    }
+
+
+    createBoard();
+
+
+    startGame();
 
 }
-
 
 
 
@@ -95,76 +71,76 @@ startGame();
 function createBoard(){
 
 
-board.innerHTML="";
+    board.innerHTML = "";
+
+    holes = [];
+
+
+    board.style.gridTemplateColumns =
+    `repeat(${grid},1fr)`;
+
+
+    let size =
+    Math.min(300, window.innerWidth*0.8) / grid;
 
 
 
-board.style.gridTemplateColumns =
-`repeat(${grid},1fr)`;
+    for(let i=0;i<grid*grid;i++){
+
+
+        let hole =
+        document.createElement("div");
+
+
+        hole.className="hole";
+
+
+        hole.style.width =
+        size+"px";
+
+
+        hole.style.height =
+        size+"px";
 
 
 
-holes=[];
+
+        let mole =
+        document.createElement("div");
+
+
+        mole.className="mole";
 
 
 
-for(let i=0;i<grid*grid;i++){
+        hole.appendChild(mole);
 
 
-let hole =
-document.createElement("div");
-
-
-hole.className="hole";
-
-
-hole.style.width =
-`${300/grid}px`;
-
-
-hole.style.height =
-`${300/grid}px`;
+        board.appendChild(hole);
 
 
 
-let mole =
-document.createElement("div");
-
-
-mole.className="mole";
-
-
-hole.appendChild(mole);
+        holes.push(mole);
 
 
 
-board.appendChild(hole);
+
+        mole.addEventListener("click",(e)=>{
 
 
-
-holes.push(mole);
-
+            e.stopPropagation();
 
 
-mole.onclick=(e)=>{
+            hitMole(mole,e);
 
 
-e.stopPropagation();
+        });
 
 
-
-hitMole(mole,e);
-
-
-
-};
-
+    }
 
 }
 
-
-
-}
 
 
 
@@ -174,10 +150,17 @@ hitMole(mole,e);
 function startGame(){
 
 
-running=true;
+    running=true;
 
 
-timer=setInterval(showMole,speed);
+    clearInterval(timer);
+
+
+    timer =
+    setInterval(
+        showMole,
+        speed
+    );
 
 
 }
@@ -191,124 +174,123 @@ timer=setInterval(showMole,speed);
 function showMole(){
 
 
-if(!running || paused)
-return;
+    if(!running || paused)
+        return;
 
 
 
-holes.forEach(m=>{
+    holes.forEach(m=>{
 
-m.classList.remove("up");
+        m.classList.remove("up");
 
-});
-
-
-
-let random =
-holes[
-Math.floor(Math.random()*holes.length)
-];
+    });
 
 
 
-random.classList.add("up");
+    let mole =
+    holes[
+        Math.floor(
+        Math.random()*holes.length)
+    ];
 
 
 
-setTimeout(()=>{
-
-
-if(random.classList.contains("up")){
-
-
-random.classList.remove("up");
-
-
-miss++;
-
-
-update();
-
-
-
-if(miss>=20)
-
-gameOver();
-
-
-}
-
-
-
-},speed);
+    mole.classList.add("up");
 
 
 
 
-
-}
-
+    setTimeout(()=>{
 
 
+        if(mole.classList.contains("up")){
 
 
+            mole.classList.remove("up");
 
-function hitMole(m,e){
+
+            miss++;
 
 
-if(
-!running ||
-paused
-)
-
-return;
+            update();
 
 
 
-if(m.classList.contains("up")){
+            if(miss >= 20){
+
+                gameOver();
+
+            }
 
 
-score++;
+        }
 
 
-m.classList.remove("up");
-
-
-
-showHammer(e);
-
-
-
-if(score%5===0){
-
-
-speed-=100;
-
-
-clearInterval(timer);
-
-timer=setInterval(
-showMole,
-Math.max(200,speed)
-);
+    },speed);
 
 
 }
 
 
 
-if(score%8===0){
-
-speed-=100;
-
-}
 
 
-update();
 
 
-}
 
+function hitMole(mole,e){
+
+
+    if(!running || paused)
+        return;
+
+
+
+    if(mole.classList.contains("up")){
+
+
+        score++;
+
+
+        mole.classList.remove("up");
+
+
+
+        showHammer(e);
+
+
+
+        // increase speed every 5 hits
+
+        if(score % 5 === 0){
+
+
+            speed -= 100;
+
+
+            if(speed < 150)
+                speed = 150;
+
+
+
+            clearInterval(timer);
+
+
+            timer =
+            setInterval(
+                showMole,
+                speed
+            );
+
+
+        }
+
+
+
+        update();
+
+
+    }
 
 
 }
@@ -322,37 +304,35 @@ update();
 function update(){
 
 
-document.getElementById("score")
-.innerText=score;
+    document.getElementById("score")
+    .innerText = score;
 
 
-document.getElementById("miss")
-.innerText=miss;
+    document.getElementById("miss")
+    .innerText = miss;
 
 
 
-
-if(score>high){
-
-
-high=score;
+    if(score > high){
 
 
-localStorage.setItem(
-"highscore",
-high
-);
+        high = score;
 
 
-document.getElementById("high")
-.innerText=high;
+        localStorage.setItem(
+            "highscore",
+            high
+        );
 
 
-}
+        document.getElementById("high")
+        .innerText = high;
 
+    }
 
 
 }
+
 
 
 
@@ -362,7 +342,9 @@ document.getElementById("high")
 
 function pauseGame(){
 
-paused=!paused;
+
+    paused = !paused;
+
 
 }
 
@@ -374,9 +356,10 @@ paused=!paused;
 
 function restartGame(){
 
-location.reload();
+    location.reload();
 
 }
+
 
 
 
@@ -387,22 +370,26 @@ location.reload();
 function gameOver(){
 
 
-running=false;
+    running=false;
 
 
-clearInterval(timer);
+    clearInterval(timer);
 
 
 
-alert(
-"GAME OVER\nScore: "+score
-);
+    alert(
+        "🐹 GAME OVER\n\nScore : "
+        +score+
+        "\nMiss : "
+        +miss
+    );
 
 
-location.reload();
 
+    location.reload();
 
 }
+
 
 
 
@@ -413,27 +400,29 @@ location.reload();
 function showHammer(e){
 
 
-let h =
-document.getElementById("hammer");
-
-h.style.left =
-e.clientX+"px";
-
-
-h.style.top =
-e.clientY+"px";
-
-
-h.style.display="block";
+    const hammer =
+    document.getElementById("hammer");
 
 
 
-setTimeout(()=>{
+    hammer.style.left =
+    e.clientX+"px";
 
-h.style.display="none";
 
-},150);
+    hammer.style.top =
+    e.clientY+"px";
 
+
+    hammer.style.display="block";
+
+
+
+    setTimeout(()=>{
+
+        hammer.style.display="none";
+
+
+    },150);
 
 
 }
