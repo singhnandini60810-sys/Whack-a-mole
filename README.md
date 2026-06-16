@@ -1,5 +1,7 @@
 # Whack-A-Mole Game
 
+https://singhnandini60810-sys.github.io/Whack-a-mole/
+
 An interactive browser game built using HTML, CSS and JavaScript.
 
 ## Features
